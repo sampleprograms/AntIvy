@@ -1,0 +1,13 @@
+<ivysettings>
+  <settings defaultResolver="main" />
+  <credentials host="localhost" realm="Artifactory Realm" username="admin" passwd="password" />
+  <resolvers>
+    <chain name="main">
+      <ibiblio name="public" m2compatible="true" root="http://localhost:8081/artifactory/repo" />
+      <url name="publish">
+        <!-- You can use  m2compatible="true" instead of specifying your own pattern -->
+        <artifact pattern="http://localhost:8081/artifactory/test-snapshot-local/[organization]/[module]/[revision]/[artifact].[ext]"/>
+        <ivy pattern="http://localhost:8081/artifactory/test-snapshot-local/[organization]/[module]/[revision]/ivy-[revision].xml" />      </url>
+    </chain>
+  </resolvers>
+</ivysettings>

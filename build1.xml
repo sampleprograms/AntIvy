@@ -1,0 +1,60 @@
+<project name="AntIvy" basedir="." default="publish"
+	xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<!-- Ant properties -->
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="build.dir" value="build" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="jar.dir" value="${build.dir}/jar" />
+	<property name="main-class" value="com.vaannila.helloworld.HelloWorld" />
+
+	<ivy:settings file="./ivysettings1.xml" />
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${lib.dir}" />
+	</target>
+
+	<target name="resolve">
+		<ivy:retrieve />
+	</target>
+
+	<target name="report" depends="resolve">
+		<ivy:report todir="${build.dir}" />
+	</target>
+
+	<target name="compile" depends="resolve">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" includeantruntime="true"/>
+	</target>
+
+
+
+	<target name="run" depends="jar">
+		<java jar="${jar.dir}/${ant.project.name}.jar" fork="true" />
+	</target>
+	
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" >
+			<manifest>
+				<attribute name="Main-Class" value="${main-class}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="compress" depends="compile">
+		<jar destfile="dist/AntIvy.jar" basedir="build/classes" />
+	</target>
+
+	<target name="publish" depends="compress">
+		<ivy:publish resolver="publish" overwrite="true"
+			artifactspattern="dist/[artifact].[ext]" forcedeliver="true"/>
+	</target>
+
+	<target name="clean-build" depends="clean,jar" />
+
+	<target name="main" depends="clean,run" />
+
+</project>
